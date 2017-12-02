@@ -1,0 +1,34 @@
+{
+    "manifest_version": 2,
+  
+    "name": "BMH Proxy Client",
+    "description": "Used only in baimaohui intranet.",
+    "version": "0.1",
+
+    "icons": {
+        "128": "images/icon.png"
+    },
+  
+    "browser_action": { //插件加载后生成图标 
+      "default_icon": "images/icon.png",
+      "default_title": "BMH Proxy Client", //鼠标移到图标显示的文字  
+      "default_popup": "popup.html" //单击图标执行的文件 
+    },
+
+    "background": { //数组.chrome会在扩展启动时自动创建一个包含所有指定脚本的页面//background script即插件运行的环境 
+        "scripts": [ //数组.chrome会在扩展启动时自动创建一个包含所有指定脚本的页面
+            "js/URI.min.js",
+            "js/background.js"
+        ],
+        "persistent": true
+    },
+
+    "permissions": [
+        "<all_urls>",
+        "proxy",
+        "webRequest",
+        "webRequestBlocking",
+        "storage"
+    ]
+  }
+  

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html style="min-width:400px;">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>BMH Proxy Switch</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap-switch.min.css" rel="stylesheet">
+    <link href="css/bootstrap-select.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <div class="form-group">
+            <h3>BMH Proxy Switch</h3>
+        </div>
+        <div class="form-group">
+            Proxy ON?
+            <div class="switch" data-on="success" data-off="warning">
+                <input id='switch_btn' type="checkbox" />
+            </div>
+        </div>
+        <div class="form-group proxy-settings">
+            Proxy IP: <input id="proxy_address" class="form-control" value="127.0.0.1"/>
+        </div>
+        <div class="form-group proxy-settings">
+            Filter:
+        </div>
+        <div class="form-group proxy-settings">
+            - Type: 
+            <select class="selectpicker" id="fetch_type">
+                <option>SSH</option>
+                <option>TOR</option>
+                <option>PROXY</option>
+            </select>
+        </div>
+        <div class="form-group proxy-settings">
+            - Country: 
+            <select class="selectpicker" id="fetch_country">
+                <option>US</option>
+                <option>RU</option>
+                <option>CN</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <button id="btn_set" class="btn btn-success" >OK</button>
+            <button id="btn_cancel" class="btn btn-default" >Close</button>
+        </div>
+    </div>
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/bootstrap-switch.min.js"></script>
+    <script src="js/bootstrap-select.min.js"></script>
+    <script src="popup.js"></script>
+</body>
+</html>
