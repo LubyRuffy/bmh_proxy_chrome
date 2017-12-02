@@ -38,6 +38,14 @@ $(document).ready(function(){
     })
 
     // 设置初始状态
+    $('.title').text(chrome.i18n.getMessage("title"));
+    $('.proxy_on').text(chrome.i18n.getMessage("proxy_on"));
+    $('.proxy_address').text(chrome.i18n.getMessage("proxy_address"));
+    $('.filter').text(chrome.i18n.getMessage("filter"));
+    $('.fetch_type').text(chrome.i18n.getMessage("fetch_type"));
+    $('.fetch_country').text(chrome.i18n.getMessage("fetch_country"));
+    $('.ok').text(chrome.i18n.getMessage("ok"));
+    $('.close_cap').text(chrome.i18n.getMessage("close_cap"));
     backgroundPage.app.getState(function(state) {
         changeState(state);
     });

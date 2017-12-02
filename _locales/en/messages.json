@@ -1,0 +1,26 @@
+{
+    "title": {
+      "message": "BMH Proxy Switch"
+    },
+    "proxy_on": {
+      "message": "Proxy On?"
+    },
+    "proxy_address": {
+      "message": "Proxy Address"
+    },
+    "filter": {
+      "message": "Filter"
+    },
+    "fetch_type": {
+      "message": "Type"
+    },
+    "fetch_country": {
+      "message": "Country"
+    },
+    "ok": {
+      "message": "OK"
+    },
+    "close_cap": {
+      "message": "Close"
+    }
+}

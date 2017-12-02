@@ -1,0 +1,26 @@
+{
+    "title": {
+      "message": "BMH代理池切换器"
+    },
+    "proxy_on": {
+      "message": "代理全局开关"
+    },
+    "proxy_address": {
+      "message": "代理服务器地址"
+    },
+    "filter": {
+      "message": "筛选器"
+    },
+    "fetch_type": {
+      "message": "类型"
+    },
+    "fetch_country": {
+      "message": "国家"
+    },
+    "ok": {
+      "message": "确定"
+    },
+    "close_cap": {
+      "message": "关闭"
+    }
+}

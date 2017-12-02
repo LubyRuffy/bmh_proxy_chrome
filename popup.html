@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>BMH Proxy Switch</title>
+    <title class="title">BMH Proxy Switch</title>
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/bootstrap-switch.min.css" rel="stylesheet">
     <link href="css/bootstrap-select.min.css" rel="stylesheet">
@@ -15,30 +15,31 @@
 <body>
     <div class="container">
         <div class="form-group">
-            <h3>BMH Proxy Switch</h3>
+            <h3 class="title">BMH Proxy Switch</h3>
         </div>
         <div class="form-group">
-            Proxy ON?
+            <span class="proxy_on">Proxy ON?</span>
             <div class="switch" data-on="success" data-off="warning">
                 <input id='switch_btn' type="checkbox" />
             </div>
         </div>
         <div class="form-group proxy-settings">
-            Proxy IP: <input id="proxy_address" class="form-control" value="127.0.0.1"/>
+            <span class="proxy_address">Proxy Address</span>
+            : <input id="proxy_address" class="form-control" value="127.0.0.1"/>
         </div>
         <div class="form-group proxy-settings">
-            Filter:
+            <span class="filter">Filter</span>:
         </div>
         <div class="form-group proxy-settings">
-            - Type: 
+            - <span class="fetch_type">Type</span>:
             <select class="selectpicker" id="fetch_type">
                 <option>SSH</option>
                 <option>TOR</option>
-                <option>PROXY</option>
+                <option>PROXYS</option>
             </select>
         </div>
         <div class="form-group proxy-settings">
-            - Country: 
+            - <span class="fetch_country">Country</span>:
             <select class="selectpicker" id="fetch_country">
                 <option>US</option>
                 <option>RU</option>
@@ -46,8 +47,8 @@
             </select>
         </div>
         <div class="form-group">
-            <button id="btn_set" class="btn btn-success" >OK</button>
-            <button id="btn_cancel" class="btn btn-default" >Close</button>
+            <button id="btn_set" class="btn btn-success" ><span class="ok">OK</span></button>
+            <button id="btn_cancel" class="btn btn-default" ><span class="close_cap">Close</span></button>
         </div>
     </div>
 

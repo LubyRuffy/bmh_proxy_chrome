@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
   
-    "name": "BMH Proxy Client",
+    "name": "__MSG_title__",
     "description": "Used only in baimaohui intranet.",
     "version": "0.1",
 
@@ -9,9 +9,11 @@
         "128": "images/icon.png"
     },
   
+    "default_locale": "zh_CN",
+
     "browser_action": { //插件加载后生成图标 
       "default_icon": "images/icon.png",
-      "default_title": "BMH Proxy Client", //鼠标移到图标显示的文字  
+      "default_title": "__MSG_title__", //鼠标移到图标显示的文字  
       "default_popup": "popup.html" //单击图标执行的文件 
     },
 
