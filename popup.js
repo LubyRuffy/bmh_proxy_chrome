@@ -17,6 +17,8 @@ function update_proxy_filter() {
 $(document).ready(function(){
     backgroundPage = chrome.extension.getBackgroundPage();
 
+    // alert(backgroundPage.app.ua);
+
     $("#switch_btn").bootstrapSwitch();
     
     $('#switch_btn').on('switchChange.bootstrapSwitch', function (event, state) {

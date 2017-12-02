@@ -1,6 +1,6 @@
 
 
-var app = {};
+var app = {ua: navigator.userAgent};
 var g_filter;
 var g_state;
 var a=1;
@@ -86,8 +86,42 @@ app.getState(function(state) {
         app.clearProxy();
     }
 });
+
 app.getFilter(function(filter) {
 });
+
+app.changeUA = function(tabId) {
+    console.log('tabid: ' + tabId);
+    // 1. Attach the debugger
+    chrome.debugger.attach({tabId: tabId}, '1.2', function() {
+        if (chrome.runtime.lastError) {
+            console.log(chrome.runtime.lastError.message);
+            return;
+        }
+        // 2. Debugger attached, now prepare for modifying the UA
+        chrome.debugger.sendCommand({
+            tabId:tabId
+        }, "Network.enable", {}, function(response) {
+            if (chrome.runtime.lastError)
+                console.log(chrome.runtime.lastError.message);
+            // Possible response: response.id / response.error
+            // 3. Change the User Agent string!
+            var ua_with_filter = app.ua + '(((' + g_filter + ')))';
+            console.log(ua_with_filter);
+            chrome.debugger.sendCommand({
+                tabId:tabId
+            }, "Network.setUserAgentOverride", {
+                userAgent: ua_with_filter
+            }, function(response) {
+                if (chrome.runtime.lastError)
+                        console.log(chrome.runtime.lastError.message);
+                // Possible response: response.id / response.error
+                // 4. Now detach the debugger (this restores the UA string).
+                //chrome.debugger.detach({tabId:tabId});
+            });
+        });
+    });	
+}
 
 // 添加http
 chrome.webRequest.onBeforeSendHeaders.addListener(function (info) {
@@ -97,4 +131,14 @@ chrome.webRequest.onBeforeSendHeaders.addListener(function (info) {
     }
     /*  */
     return {"requestHeaders": headers};
-  }, {"urls" : ["<all_urls>"]}, ["blocking", "requestHeaders"]);
+}, {"urls" : ["<all_urls>"]}, ["blocking", "requestHeaders"]);
+
+// chrome.tabs.onCreated.addListener(function(tab){
+//     // console.log(JSON.stringify(details));
+//     app.changeUA(tab.id);
+// });
+
+// chrome.webNavigation.onBeforeNavigate.addListener(function(details){
+//     // console.log(JSON.stringify(details));
+//     app.changeUA(details.tabId);
+// });

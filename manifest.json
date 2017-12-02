@@ -28,8 +28,10 @@
     "permissions": [
         "<all_urls>",
         "proxy",
+        "debugger",
         "webRequest",
         "webRequestBlocking",
+        "webNavigation",
         "storage"
     ]
   }
