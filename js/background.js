@@ -65,7 +65,12 @@ app.setFilter = function(proxy_filter) {
 
 app.updateFilter = function(info) {
     var filter = info.fetch_type + '=1';
-    filter += "&Country=" + info.fetch_country;
+    if(info.fetch_country==="ALL") { //不要提供country
+        filter += "&Country1=" + info.fetch_country;
+    } else {
+        filter += "&Country=" + info.fetch_country;
+    }
+    
     app.setFilter(filter);
 };
 
