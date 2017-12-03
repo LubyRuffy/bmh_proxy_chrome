@@ -17,6 +17,9 @@
     "fetch_country": {
       "message": "Country"
     },
+    "fetch_mode": {
+      "message": "Mode"
+    },
     "ok": {
       "message": "OK"
     },

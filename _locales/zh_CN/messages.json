@@ -17,6 +17,9 @@
     "fetch_country": {
       "message": "国家"
     },
+    "fetch_mode": {
+      "message": "模式"
+    },
     "ok": {
       "message": "确定"
     },

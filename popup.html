@@ -31,6 +31,13 @@
             <span class="filter">Filter</span>:
         </div>
         <div class="form-group proxy-settings">
+            - <span class="fetch_mode">Mode</span>:
+            <select class="selectpicker" id="fetch_mode">
+                <option>RANDOM</option>
+                <option>BIND</option>
+            </select>
+        </div>
+        <div class="form-group proxy-settings">
             - <span class="fetch_type">Type</span>:
             <select class="selectpicker" id="fetch_type">
                 <option>SSH</option>
@@ -42,15 +49,20 @@
             - <span class="fetch_country">Country</span>:
             <select class="selectpicker" id="fetch_country">
                 <option>ALL</option>
-                <option>US</option>
-                <option>RU</option>
-                <option>CN</option>
+                <option value="United States">US</option>
+                <option value="Russia">RU</option>
+                <option value="China">CN</option>
+                <option value="Japan">JP</option>
                 <option>RAW</option>
             </select>
+        </div>
+        <div class="form-group proxy-settings">
+            <span id="proxy_bind_address"></span>
         </div>
         <div class="form-group">
             <button id="btn_set" class="btn btn-success" ><span class="ok">OK</span></button>
             <button id="btn_cancel" class="btn btn-default" ><span class="close_cap">Close</span></button>
+            <button class="btn btn-primary" id="fresh_client_id">Refresh</button>
         </div>
     </div>
 
