@@ -1,4 +1,8 @@
-function parseQuery(queryString) {
+// 唯一的导出对象
+var app = {state: false, ua: navigator.userAgent, mode: 'random', cid: '0', backend_proxy: '', backend_proxy_country: '', filter: ''};
+
+// 解析参数
+app.parseQuery = function(queryString) {
     var query = {};
     var pairs = (queryString[0] === '?' ? queryString.substr(1) : queryString).split('&');
     for (var i = 0; i < pairs.length; i++) {
@@ -8,26 +12,32 @@ function parseQuery(queryString) {
     return query;
 }
 
-var app = {ua: navigator.userAgent, mode: 'random', cid: '0'};
-var g_filter;
-var g_state;
-var a=1;
+// 访问URL
+app.fetch_url = function(url, filter, callback) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", url, true);
+    xhr.setRequestHeader("BMHSetCid", app.getCID()); //本请求用于设置id（包括connect请求）
+    xhr.setRequestHeader("BMHSelection", filter);
+    xhr.setRequestHeader("BMHClientID", app.getCID());
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4) {
+            callback(xhr);
+        }
+    }
+    xhr.send();
+}
 
 // 状态
-app.getState = function(callback) {
-    chrome.storage.sync.get('state', function(r){
-        g_state = (r['state']==='on');
-        callback(g_state);
-    });
+app.changeState = function(state) {
+    chrome.storage.sync.set({'state': state});
+    if(!state) app.clearProxy();
+    app.updateState(state);
 } ;
 
-app.changeState = function(state) {
-    if((state==='off')) app.clearProxy();
-    chrome.storage.sync.set({'state': state});
-    chrome.browserAction.setBadgeText({text: state});
-    chrome.browserAction.setBadgeBackgroundColor({color: (state==='on') ? '#00ff00' : '#ff0000'});
-    g_state = (state==='on');
-} ;
+app.updateState = function(state){
+    app.state = state;
+    app.updateBadge();
+}
 
 // cid
 app.getCID = function() {
@@ -74,29 +84,50 @@ app.clearProxy = function() {
 }
 
 // 后端代理地址
-app.getBackendProxy = function(callback) {
-    chrome.storage.sync.get('backend_proxy', function(r){
-        callback(r['backend_proxy']);
-    });
-} ;
+app.setBackendProxyCountry = function(backend_proxy_country) {
+    app.backend_proxy_country = backend_proxy_country;
+    chrome.storage.sync.set({'backend_proxy_country': backend_proxy_country});
+    app.updateBadge();
+};
 
 app.setBackendProxy = function(backend_proxy_addr) {
-    chrome.storage.sync.set({'backend_proxy': backend_proxy_addr});
+    if(backend_proxy_addr) {
+        if(app.backend_proxy != backend_proxy_addr) {
+            app.backend_proxy = backend_proxy_addr;
+            chrome.storage.sync.set({'backend_proxy': backend_proxy_addr});
+            app.fetch_url('http://ip.bmh.im/cc', app.filter, function(xhr) {
+                app.setBackendProxyCountry(xhr.responseText);
+            })
+        }
+    }
 } ;
 
+// 在state发生变化，或者mode发生变化的情况下都需要调用
+app.updateBadge = function() {
+    chrome.browserAction.setBadgeBackgroundColor({color: app.state ? '#00ff00' : '#ff0000'});
+
+    if(!app.state){
+        chrome.browserAction.setBadgeText({text: app.state ? 'on' : 'off'});
+    }
+    else if(app.mode === 'bind') {
+        chrome.browserAction.setBadgeText({text: app.backend_proxy_country});
+    }
+};
+
+app.updateMode = function(mode) {
+    app.mode = mode;
+    app.updateBadge();
+};
+
 // 过滤器
-app.getFilter = function(callback) {
-    chrome.storage.sync.get('proxy_filter', function(r){
-        g_filter = r['proxy_filter'];
-        app.mode = parseQuery(g_filter).Mode.toLowerCase();
-        callback(g_filter);
-    });
-} ;
+app.updateFilter = function(proxy_filter){
+    app.filter = proxy_filter;
+    app.updateMode(app.parseQuery(app.filter).Mode.toLowerCase());
+}
 
 app.setFilter = function(proxy_filter) {
     chrome.storage.sync.set({'proxy_filter': proxy_filter});
-    g_filter = proxy_filter;
-    app.mode = parseQuery(g_filter).Mode.toLowerCase();
+    app.updateFilter(proxy_filter);
 } ;
 
 app.build_filter = function(info) {
@@ -115,64 +146,54 @@ app.build_filter = function(info) {
     return filter;
 }
 
-app.updateFilter = function(info) {
+app.setFilterFromObj = function(info) {
     var filter = app.build_filter(info);
     app.setFilter(filter);
 };
 
   
-// 初始化状态展示
-app.getState(function(state) {
-    app.changeState( state ? 'on' : 'off');
-    if(state) {
-        app.getProxyAddr(function(proxy_addr){
-            app.setProxyAddr(proxy_addr);
-        })
-    }else{
-        app.clearProxy();
-    }
-});
-
-app.getFilter(function(filter) {
-});
-
-app.changeUA = function(tabId) {
-    console.log('tabid: ' + tabId);
-    // 1. Attach the debugger
-    chrome.debugger.attach({tabId: tabId}, '1.2', function() {
-        if (chrome.runtime.lastError) {
-            console.log(chrome.runtime.lastError.message);
-            return;
-        }
-        // 2. Debugger attached, now prepare for modifying the UA
-        chrome.debugger.sendCommand({
-            tabId:tabId
-        }, "Network.enable", {}, function(response) {
-            if (chrome.runtime.lastError)
-                console.log(chrome.runtime.lastError.message);
-            // Possible response: response.id / response.error
-            // 3. Change the User Agent string!
-            var ua_with_filter = app.ua + '(((' + g_filter + ')))';
-            console.log(ua_with_filter);
-            chrome.debugger.sendCommand({
-                tabId:tabId
-            }, "Network.setUserAgentOverride", {
-                userAgent: ua_with_filter
-            }, function(response) {
-                if (chrome.runtime.lastError)
-                        console.log(chrome.runtime.lastError.message);
-                // Possible response: response.id / response.error
-                // 4. Now detach the debugger (this restores the UA string).
-                //chrome.debugger.detach({tabId:tabId});
-            });
-        });
-    });	
-}
+// 修改ua
+// app.changeUA = function(tabId) {
+//     console.log('tabid: ' + tabId);
+//     // 1. Attach the debugger
+//     chrome.debugger.attach({tabId: tabId}, '1.2', function() {
+//         if (chrome.runtime.lastError) {
+//             console.log(chrome.runtime.lastError.message);
+//             return;
+//         }
+//         // 2. Debugger attached, now prepare for modifying the UA
+//         chrome.debugger.sendCommand({
+//             tabId:tabId
+//         }, "Network.enable", {}, function(response) {
+//             if (chrome.runtime.lastError)
+//                 console.log(chrome.runtime.lastError.message);
+//             // Possible response: response.id / response.error
+//             // 3. Change the User Agent string!
+//             var ua_with_filter = app.ua + '(((' + app.filter + ')))';
+//             console.log(ua_with_filter);
+//             chrome.debugger.sendCommand({
+//                 tabId:tabId
+//             }, "Network.setUserAgentOverride", {
+//                 userAgent: ua_with_filter
+//             }, function(response) {
+//                 if (chrome.runtime.lastError)
+//                         console.log(chrome.runtime.lastError.message);
+//                 // Possible response: response.id / response.error
+//                 // 4. Now detach the debugger (this restores the UA string).
+//                 //chrome.debugger.detach({tabId:tabId});
+//             });
+//         });
+//     });	
+// }
+// chrome.webNavigation.onBeforeNavigate.addListener(function(details){
+//     // console.log(JSON.stringify(details));
+//     app.changeUA(details.tabId);
+// });
 
 // 添加http
 chrome.webRequest.onBeforeSendHeaders.addListener(function (info) {
     var headers = info.requestHeaders;
-    if (g_state) {
+    if (app.state) {
         var is_setcid = false;
         for (var i = 0; i < headers.length; ++i) {
             if (headers[i].name === 'BMHSetCid') {
@@ -182,7 +203,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(function (info) {
         }
         if(!is_setcid)
         {
-            headers.push({'name': 'BMHSelection', 'value': g_filter});
+            headers.push({'name': 'BMHSelection', 'value': app.filter});
         }
 
         if(app.mode==='bind')
@@ -208,12 +229,28 @@ chrome.webRequest.onHeadersReceived.addListener(function (info) {
     }
 }, {"urls" : ["<all_urls>"]}, ["blocking", "responseHeaders"]);
 
-// chrome.tabs.onCreated.addListener(function(tab){
-//     // console.log(JSON.stringify(details));
-//     app.changeUA(tab.id);
-// });
+app.parse_from_storage = function () {
+    chrome.storage.sync.get({'state':false, 'proxy_filter': '', 'backend_proxy': '', 'backend_proxy_country':'', 'cid':'0'}, function(r){
+        app.changeState(r['state']);
+        app.filter = r['proxy_filter'];
+        app.updateMode(app.parseQuery(app.filter).Mode.toLowerCase());
+        app.backend_proxy = r['backend_proxy'];
+        app.backend_proxy_country = r['backend_proxy_country'];
+        app.cid = r['cid'];
 
-// chrome.webNavigation.onBeforeNavigate.addListener(function(details){
-//     // console.log(JSON.stringify(details));
-//     app.changeUA(details.tabId);
-// });
+        if(app.state) {
+            app.getProxyAddr(function(proxy_addr){
+                app.setProxyAddr(proxy_addr);
+            })
+        }else{
+            app.clearProxy();
+        }
+        app.changeState( app.state );
+    });
+};
+
+app.init = function() {
+    app.parse_from_storage();
+};
+
+app.init();

@@ -25,5 +25,11 @@
     },
     "close_cap": {
       "message": "关闭"
+    },
+    "refresh": {
+      "message": "重新获取代理"
+    },
+    "fetch_proxy": {
+      "message": "正在获取代理地址..."
     }
 }

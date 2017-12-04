@@ -10,6 +10,16 @@
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/bootstrap-switch.min.css" rel="stylesheet">
     <link href="css/bootstrap-select.min.css" rel="stylesheet">
+    <style>
+    .glyphicon.spinning {
+        animation: spin 1s infinite linear;
+    }
+    
+    @keyframes spin {
+        from { transform: scale(1) rotate(0deg);}
+        to { transform: scale(1) rotate(360deg);}
+    }
+    </style>
 </head>
 
 <body>
@@ -33,16 +43,16 @@
         <div class="form-group proxy-settings">
             - <span class="fetch_mode">Mode</span>:
             <select class="selectpicker" id="fetch_mode">
-                <option>RANDOM</option>
                 <option>BIND</option>
+                <option>RANDOM</option>
             </select>
         </div>
         <div class="form-group proxy-settings">
             - <span class="fetch_type">Type</span>:
             <select class="selectpicker" id="fetch_type">
-                <option>SSH</option>
-                <option>TOR</option>
                 <option>PROXYS</option>
+                <option>TOR</option>
+                <option>SSH</option>
             </select>
         </div>
         <div class="form-group proxy-settings">
@@ -57,13 +67,14 @@
                 <option>RAW</option>
             </select>
         </div>
-        <div class="form-group proxy-settings">
+        <div class="form-group proxy-settings bind_mode">
             <span id="proxy_bind_address"></span>
+            <span id="proxy_bind_country"></span>
+            <button class="btn btn-primary btn-xs" id="fresh_client_id">Refresh</button>
         </div>
         <div class="form-group">
             <button id="btn_set" class="btn btn-success" ><span class="ok">OK</span></button>
             <button id="btn_cancel" class="btn btn-default" ><span class="close_cap">Close</span></button>
-            <button class="btn btn-primary" id="fresh_client_id">Refresh</button>
         </div>
     </div>
 

@@ -25,5 +25,11 @@
     },
     "close_cap": {
       "message": "Close"
+    },
+    "refresh": {
+      "message": "Refresh"
+    },
+    "fetch_proxy": {
+      "message": "Fetch proxy address..."
     }
 }

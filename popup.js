@@ -1,7 +1,7 @@
 var backgroundPage;
 
 function changeState(state) {
-    backgroundPage.app.changeState( state ? 'on' : 'off');
+    backgroundPage.app.changeState( state );
     if (state){ $('.proxy-settings').show(); } else { $('.proxy-settings').hide(); }
     $('#switch_btn').bootstrapSwitch('state', state);
 }
@@ -12,7 +12,7 @@ function update_proxy_filter() {
     var fetch_country = $('#fetch_country').selectpicker('val');
     var fetch_mode = $('#fetch_mode').selectpicker('val');
     // console.log(fetch_country);
-    backgroundPage.app.updateFilter({
+    backgroundPage.app.setFilterFromObj({
         'fetch_type': fetch_type, 
         'fetch_country': fetch_country, 
         'fetch_mode': fetch_mode,
@@ -35,24 +35,19 @@ function build_cid_filter()
 // 重新生成后端地址
 function fresh_backend_proxy() {
     update_proxy_filter();
-    $('#proxy_bind_address').text('Fetch proxy address...');
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", "http://ip.bmh.im", true);
-    xhr.setRequestHeader("BMHSetCid", backgroundPage.app.getCID()); //本请求用于设置id（包括connect请求）
-    var filter = build_cid_filter();
-    xhr.setRequestHeader("BMHSelection", filter);
-    xhr.setRequestHeader("BMHClientID", backgroundPage.app.getCID());
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState == 4) {
-            var backend_proxy = xhr.getResponseHeader("BMHBackendServer")
-            $('#proxy_bind_address').text(backend_proxy);
-            backgroundPage.app.setBackendProxy(backend_proxy);
+    
+    $('#proxy_bind_address').html("<span class='glyphicon glyphicon-refresh spinning'></span>" + chrome.i18n.getMessage("fetch_proxy"));
+    $('#proxy_bind_country').html("");
 
-            update_proxy_filter();
-            close();
-        }
-    }
-    xhr.send();
+    var filter = build_cid_filter();
+    backgroundPage.app.fetch_url("http://ip.bmh.im/myip", filter, function(xhr){
+        var backend_proxy = xhr.getResponseHeader("BMHBackendServer")
+        $('#proxy_bind_address').text(backend_proxy);
+        backgroundPage.app.setBackendProxy(backend_proxy);
+
+        update_proxy_filter();
+        close();
+    });
 }
 
 $(document).ready(function(){
@@ -97,17 +92,14 @@ $(document).ready(function(){
     })
 
     $('#fetch_mode').on('changed.bs.select', function () {
-        if($('#fetch_mode').selectpicker('val').toLowerCase() === 'bind') {
-            $('#proxy_bind_address').show();
-            backgroundPage.app.getBackendProxy(function(proxy_bind_address) {
-                console.log(proxy_bind_address);
-                if(proxy_bind_address)
-                {
-                    $('#proxy_bind_address').text(proxy_bind_address);
-                }
-            });
+        if(backgroundPage.app.state && $('#fetch_mode').selectpicker('val').toLowerCase() === 'bind') {
+            $('.bind_mode').show();
+            if(backgroundPage.app.backend_proxy)
+            {
+                $('#proxy_bind_address').text(backgroundPage.app.backend_proxy);
+            }
         } else {
-            $('#proxy_bind_address').hide();
+            $('.bind_mode').hide();
         }
     });
 
@@ -121,9 +113,9 @@ $(document).ready(function(){
     $('.fetch_mode').text(chrome.i18n.getMessage("fetch_mode"));
     $('.ok').text(chrome.i18n.getMessage("ok"));
     $('.close_cap').text(chrome.i18n.getMessage("close_cap"));
-    backgroundPage.app.getState(function(state) {
-        changeState(state);
-    });
+    $('#fresh_client_id').text(chrome.i18n.getMessage("refresh"));
+    
+    changeState(backgroundPage.app.state);
 
     backgroundPage.app.getProxyAddr(function(proxy_address) {
         if(!proxy_address)
@@ -132,23 +124,25 @@ $(document).ready(function(){
         }
         $('#proxy_address').val(proxy_address);
     });
-    backgroundPage.app.getFilter(function(proxy_filter) {
-        if(proxy_filter) {
-            var params = proxy_filter.split('&');
-            var [fetch_type,_] = params[0].split('=');
-            $('#fetch_type').selectpicker('val', fetch_type);
-            if (params[1])
-            {
-                var [_,fetch_country] = params[1].split('=');
-                $('#fetch_country').selectpicker('val', fetch_country);
-            }
-            if (params[2])
-            {
-                var [_,fetch_mode] = params[2].split('=');
-                $('#fetch_mode').selectpicker('val', fetch_mode);
-                $('#fetch_mode').trigger('changed.bs.select');
-            }
+
+    $('#proxy_bind_address').text(backgroundPage.app.backend_proxy);
+    $('#proxy_bind_country').text(backgroundPage.app.backend_proxy_country);
+
+    var proxy_filter = backgroundPage.app.filter;
+    if(proxy_filter) {
+        var params = proxy_filter.split('&');
+        var [fetch_type,_] = params[0].split('=');
+        $('#fetch_type').selectpicker('val', fetch_type);
+        if (params[1])
+        {
+            var [_,fetch_country] = params[1].split('=');
+            $('#fetch_country').selectpicker('val', fetch_country);
         }
-    });
-    
+        if (params[2])
+        {
+            var [_,fetch_mode] = params[2].split('=');
+            $('#fetch_mode').selectpicker('val', fetch_mode);
+            $('#fetch_mode').trigger('changed.bs.select');
+        }
+    }
 })
