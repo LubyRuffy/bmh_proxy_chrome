@@ -8,17 +8,15 @@
     "icons": {
         "128": "images/icon.png"
     },
-  
     "default_locale": "zh_CN",
-
-    "browser_action": { //插件加载后生成图标 
-      "default_icon": "images/icon.png",
-      "default_title": "__MSG_title__", //鼠标移到图标显示的文字  
-      "default_popup": "popup.html" //单击图标执行的文件 
+    "browser_action": {
+        "default_icon": "images/icon.png",
+        "default_popup": "popup.html",
+        "default_title": "__MSG_title__"
     },
 
-    "background": { //数组.chrome会在扩展启动时自动创建一个包含所有指定脚本的页面//background script即插件运行的环境 
-        "scripts": [ //数组.chrome会在扩展启动时自动创建一个包含所有指定脚本的页面
+    "background": { 
+        "scripts": [ 
             "js/URI.min.js",
             "js/background.js"
         ],
