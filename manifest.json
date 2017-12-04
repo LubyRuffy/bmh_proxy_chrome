@@ -3,7 +3,7 @@
   
     "name": "__MSG_title__",
     "description": "Used only in baimaohui intranet.",
-    "version": "0.1",
+    "version": "0.2",
 
     "icons": {
         "128": "images/icon.png"
