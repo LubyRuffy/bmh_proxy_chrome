@@ -96,6 +96,21 @@ $(document).ready(function(){
         fresh_backend_proxy();
     })
 
+    $('#fetch_mode').on('changed.bs.select', function () {
+        if($('#fetch_mode').selectpicker('val').toLowerCase() === 'bind') {
+            $('#proxy_bind_address').show();
+            backgroundPage.app.getBackendProxy(function(proxy_bind_address) {
+                console.log(proxy_bind_address);
+                if(proxy_bind_address)
+                {
+                    $('#proxy_bind_address').text(proxy_bind_address);
+                }
+            });
+        } else {
+            $('#proxy_bind_address').hide();
+        }
+    });
+
     // 设置初始状态
     $('.title').text(chrome.i18n.getMessage("title"));
     $('.proxy_on').text(chrome.i18n.getMessage("proxy_on"));
@@ -131,17 +146,7 @@ $(document).ready(function(){
             {
                 var [_,fetch_mode] = params[2].split('=');
                 $('#fetch_mode').selectpicker('val', fetch_mode);
-
-                console.log(fetch_mode);
-                if(fetch_mode.toLowerCase() === 'bind') {
-                    backgroundPage.app.getBackendProxy(function(proxy_bind_address) {
-                        console.log(proxy_bind_address);
-                        if(proxy_bind_address)
-                        {
-                            $('#proxy_bind_address').text(proxy_bind_address);
-                        }
-                    });
-                }
+                $('#fetch_mode').trigger('changed.bs.select');
             }
         }
     });
