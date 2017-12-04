@@ -1,5 +1,5 @@
 // 唯一的导出对象
-var app = {state: false, ua: navigator.userAgent, mode: 'random', cid: '0', backend_proxy: '', backend_proxy_country: '', filter: ''};
+var app = {state: false, ua: navigator.userAgent, type: 'proxy', mode: 'random', cid: '0', backend_proxy: '', backend_proxy_country: '', filter: ''};
 
 // 解析参数
 app.parseQuery = function(queryString) {
@@ -109,20 +109,39 @@ app.updateBadge = function() {
     if(!app.state){
         chrome.browserAction.setBadgeText({text: app.state ? 'on' : 'off'});
     }
-    else if(app.mode === 'bind') {
-        chrome.browserAction.setBadgeText({text: app.backend_proxy_country});
+    else if(app.type === 'tor') {
+        chrome.browserAction.setBadgeText({text: app.type});
     }
-};
+    // else if(app.type === 'ssh') {
+    //     chrome.browserAction.setBadgeText({text: app.backend_proxy_country.length>0 ? app.backend_proxy_country : app.type});
+    // }
+    else if(app.mode === 'bind') {
+        chrome.browserAction.setBadgeText({text: app.backend_proxy_country.length>0 ? app.backend_proxy_country : app.type});
+    }
+    else {
+        chrome.browserAction.setBadgeText({text: app.state ? 'on' : 'off'});
+    }
+}; 
 
 app.updateMode = function(mode) {
     app.mode = mode;
     app.updateBadge();
 };
 
+app.updateType = function(type) {
+    app.type = type;
+    app.updateBadge();
+};
+
 // 过滤器
 app.updateFilter = function(proxy_filter){
     app.filter = proxy_filter;
-    app.updateMode(app.parseQuery(app.filter).Mode.toLowerCase());
+    // console.log('updateFilter: filter='+proxy_filter);
+    var filter_obj = app.parseQuery(app.filter);
+    // console.log('updateFilter: '+JSON.stringify(filter_obj));
+    app.updateMode(filter_obj.Mode.toLowerCase());
+    // console.log('updateFilter: type='+Object.keys(filter_obj)[0].toLowerCase());
+    app.updateType(Object.keys(filter_obj)[0].toLowerCase());
 }
 
 app.setFilter = function(proxy_filter) {
@@ -232,8 +251,10 @@ chrome.webRequest.onHeadersReceived.addListener(function (info) {
 app.parse_from_storage = function () {
     chrome.storage.sync.get({'state':false, 'proxy_filter': '', 'backend_proxy': '', 'backend_proxy_country':'', 'cid':'0'}, function(r){
         app.changeState(r['state']);
-        app.filter = r['proxy_filter'];
-        app.updateMode(app.parseQuery(app.filter).Mode.toLowerCase());
+        app.updateFilter(r['proxy_filter']);
+        // app.filter = r['proxy_filter'];
+        // app.updateMode(app.parseQuery(app.filter).Mode.toLowerCase());
+        // app.updateMode(app.parseQuery(app.filter).Mode.toLowerCase());
         app.backend_proxy = r['backend_proxy'];
         app.backend_proxy_country = r['backend_proxy_country'];
         app.cid = r['cid'];

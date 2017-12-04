@@ -24,11 +24,11 @@ function build_cid_filter()
 {
     var fetch_type = $('#fetch_type').selectpicker('val');
     var fetch_country = $('#fetch_country').selectpicker('val');
-    var filter = "G=1";
-    filter += "&" + fetch_type + '=1';
+    var filter = fetch_type + '=1';
     if(fetch_country!="ALL" && fetch_country!="RAW") { //不要提供country
         filter += "&Country=" + fetch_country;
     }
+    filter += "&G=1";
     return filter;
 }
 
@@ -40,6 +40,7 @@ function fresh_backend_proxy() {
     $('#proxy_bind_country').html("");
 
     var filter = build_cid_filter();
+    console.log('fresh_backend_proxy: ' + filter);
     backgroundPage.app.fetch_url("http://ip.bmh.im/myip", filter, function(xhr){
         var backend_proxy = xhr.getResponseHeader("BMHBackendServer")
         $('#proxy_bind_address').text(backend_proxy);
@@ -48,6 +49,25 @@ function fresh_backend_proxy() {
         update_proxy_filter();
         close();
     });
+}
+
+function update_type() {
+    if($('#fetch_type').selectpicker('val').toLowerCase() === 'tor') {
+        $('.proxy-type-settings').show();
+        $('.proxy-mode-settings').hide();
+        $('.proxy-country-settings').hide();
+        $('.bind_mode').hide();
+    } else if($('#fetch_type').selectpicker('val').toLowerCase() === 'ssh') {
+        $('.proxy-type-settings').show();
+        $('.proxy-mode-settings').show();
+        $('.proxy-country-settings').hide();
+        $('.bind_mode').hide();
+    } else {
+        $('.proxy-type-settings').show();
+        $('.proxy-mode-settings').show();
+        $('.proxy-country-settings').show();
+        $('.bind_mode').show();
+    }
 }
 
 $(document).ready(function(){
@@ -90,6 +110,10 @@ $(document).ready(function(){
         backgroundPage.app.updateCID();
         fresh_backend_proxy();
     })
+
+    $('#fetch_type').on('changed.bs.select', function () {
+        update_type();
+    });
 
     $('#fetch_mode').on('changed.bs.select', function () {
         if(backgroundPage.app.state && $('#fetch_mode').selectpicker('val').toLowerCase() === 'bind') {
@@ -145,4 +169,6 @@ $(document).ready(function(){
             $('#fetch_mode').trigger('changed.bs.select');
         }
     }
+
+    update_type();
 })
