@@ -194,6 +194,20 @@ chrome.webRequest.onBeforeSendHeaders.addListener(function (info) {
     return {"requestHeaders": headers};
 }, {"urls" : ["<all_urls>"]}, ["blocking", "requestHeaders"]);
 
+// BMHBackendServer在失败后会发生变化，这时候需要重新设置后端绑定
+chrome.webRequest.onHeadersReceived.addListener(function (info) {
+    var headers = info.responseHeaders;
+    if(app.mode==='bind')
+    {
+        for (var i = 0; i < headers.length; ++i) {
+            if (headers[i].name === 'BMHBackendServer') {
+                app.setBackendProxy(headers[i].value)
+                break;
+            }
+        }
+    }
+}, {"urls" : ["<all_urls>"]}, ["blocking", "responseHeaders"]);
+
 // chrome.tabs.onCreated.addListener(function(tab){
 //     // console.log(JSON.stringify(details));
 //     app.changeUA(tab.id);
