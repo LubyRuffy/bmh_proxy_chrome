@@ -62,7 +62,7 @@ function update_type() {
             $('.proxy-type-settings').show();
             $('.proxy-mode-settings').show();
             $('.proxy-country-settings').hide();
-            $('.bind_mode').hide();
+            $('.bind_mode').show();
         } else {
             $('.proxy-type-settings').show();
             $('.proxy-mode-settings').show();
