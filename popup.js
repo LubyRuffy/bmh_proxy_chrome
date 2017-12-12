@@ -52,21 +52,23 @@ function fresh_backend_proxy() {
 }
 
 function update_type() {
-    if($('#fetch_type').selectpicker('val').toLowerCase() === 'tor') {
-        $('.proxy-type-settings').show();
-        $('.proxy-mode-settings').hide();
-        $('.proxy-country-settings').hide();
-        $('.bind_mode').hide();
-    } else if($('#fetch_type').selectpicker('val').toLowerCase() === 'ssh') {
-        $('.proxy-type-settings').show();
-        $('.proxy-mode-settings').show();
-        $('.proxy-country-settings').hide();
-        $('.bind_mode').hide();
-    } else {
-        $('.proxy-type-settings').show();
-        $('.proxy-mode-settings').show();
-        $('.proxy-country-settings').show();
-        $('.bind_mode').show();
+    if(backgroundPage.app.state) {
+        if($('#fetch_type').selectpicker('val').toLowerCase() === 'tor') {
+            $('.proxy-type-settings').show();
+            $('.proxy-mode-settings').hide();
+            $('.proxy-country-settings').hide();
+            $('.bind_mode').hide();
+        } else if($('#fetch_type').selectpicker('val').toLowerCase() === 'ssh') {
+            $('.proxy-type-settings').show();
+            $('.proxy-mode-settings').show();
+            $('.proxy-country-settings').hide();
+            $('.bind_mode').hide();
+        } else {
+            $('.proxy-type-settings').show();
+            $('.proxy-mode-settings').show();
+            $('.proxy-country-settings').show();
+            $('.bind_mode').show();
+        }
     }
 }
 
