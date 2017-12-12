@@ -31,5 +31,47 @@
     },
     "fetch_proxy": {
       "message": "正在获取代理地址..."
+    },
+    "ALL": {
+      "message": "所有"
+    },
+    "United_States": {
+      "message": "美国"
+    },
+    "Russian_Federation": {
+      "message": "俄罗斯"
+    },
+    "Indonesia": {
+      "message": "印度尼西亚"
+    },
+    "Japan": {
+      "message": "日本"
+    },
+    "Malaysia": {
+      "message": "马来西亚"
+    },
+    "Cuba": {
+      "message": "古巴"
+    },
+    "France": {
+      "message": "法国"
+    },
+    "Canada": {
+      "message": "加拿大"
+    },
+    "India": {
+      "message": "印度"
+    },
+    "Pakistan": {
+      "message": "巴基斯坦"
+    },
+    "RAW": {
+      "message": "原始节点"
+    },
+    "BIND": {
+      "message": "绑定模式"
+    },
+    "RANDOM": {
+      "message": "随机模式"
     }
 }

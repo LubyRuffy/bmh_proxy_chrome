@@ -51,6 +51,26 @@ function fresh_backend_proxy() {
     });
 }
 
+function load_countries_to_select() {
+    var countries = [
+        'ALL', 
+        'United States', 'Russian Federation', 'Indonesia', 'Japan', 'Malaysia',
+        'France', 'Canada', 'India', 'Pakistan',
+        //'Cuba',
+        'RAW'];
+    countries.forEach(country => {
+        $("#fetch_country").append("<option value='"+country+"'>"+chrome.i18n.getMessage(country.replace(/ /, "_"))+"</option>");
+    });
+}
+
+function load_fetch_mode_to_select() {
+    var modes = ['BIND', 'RANDOM'];
+    modes.forEach(mode => {
+        $("#fetch_mode").append("<option value='"+mode+"'>"+chrome.i18n.getMessage(mode.replace(/ /, "_"))+"</option>");
+    });
+}
+
+
 function update_type() {
     if(backgroundPage.app.state) {
         if($('#fetch_type').selectpicker('val').toLowerCase() === 'tor') {
@@ -136,7 +156,9 @@ $(document).ready(function(){
     $('.filter').text(chrome.i18n.getMessage("filter"));
     $('.fetch_type').text(chrome.i18n.getMessage("fetch_type"));
     $('.fetch_country').text(chrome.i18n.getMessage("fetch_country"));
+    load_countries_to_select(); //加载国家列表
     $('.fetch_mode').text(chrome.i18n.getMessage("fetch_mode"));
+    load_fetch_mode_to_select();
     $('.ok').text(chrome.i18n.getMessage("ok"));
     $('.close_cap').text(chrome.i18n.getMessage("close_cap"));
     $('#fresh_client_id').text(chrome.i18n.getMessage("refresh"));

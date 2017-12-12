@@ -31,5 +31,47 @@
     },
     "fetch_proxy": {
       "message": "Fetch proxy address..."
+    },
+    "ALL": {
+      "message": "所有"
+    },
+    "United_States": {
+      "message": "United States"
+    },
+    "Russian_Federation": {
+      "message": "Russian Federation"
+    },
+    "Indonesia": {
+      "message": "Indonesia"
+    },
+    "Japan": {
+      "message": "Japan"
+    },
+    "Malaysia": {
+      "message": "Malaysia"
+    },
+    "Cuba": {
+      "message": "Cuba"
+    },
+    "France": {
+      "message": "France"
+    },
+    "Canada": {
+      "message": "Canada"
+    },
+    "India": {
+      "message": "India"
+    },
+    "Pakistan": {
+      "message": "Pakistan"
+    },
+    "RAW": {
+      "message": "RAW"
+    },
+    "BIND": {
+      "message": "BIND"
+    },
+    "RANDOM": {
+      "message": "RANDOM"
     }
 }
