@@ -33,7 +33,7 @@
       "message": "Fetch proxy address..."
     },
     "ALL": {
-      "message": "所有"
+      "message": "ALL"
     },
     "United_States": {
       "message": "United States"
@@ -70,6 +70,9 @@
     },
     "BIND": {
       "message": "BIND"
+    },
+    "SPEED": {
+      "message": "SPEED"
     },
     "RANDOM": {
       "message": "RANDOM"

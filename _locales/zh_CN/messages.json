@@ -71,7 +71,10 @@
     "BIND": {
       "message": "绑定模式"
     },
+    "SPEED": {
+      "message": "速度优先随机模式"
+    },
     "RANDOM": {
-      "message": "随机模式"
+      "message": "每次切换随机模式"
     }
 }

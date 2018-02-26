@@ -64,7 +64,7 @@ function load_countries_to_select() {
 }
 
 function load_fetch_mode_to_select() {
-    var modes = ['BIND', 'RANDOM'];
+    var modes = ['BIND', 'SPEED', 'RANDOM'];
     modes.forEach(mode => {
         $("#fetch_mode").append("<option value='"+mode+"'>"+chrome.i18n.getMessage(mode.replace(/ /, "_"))+"</option>");
     });
@@ -87,7 +87,11 @@ function update_type() {
             $('.proxy-type-settings').show();
             $('.proxy-mode-settings').show();
             $('.proxy-country-settings').show();
-            $('.bind_mode').show();
+            if($('#fetch_mode').selectpicker('val').toLowerCase() === 'bind') {
+                $('.bind_mode').show();
+            } else {
+                $('.bind_mode').hide();
+            }
         }
     }
 }
