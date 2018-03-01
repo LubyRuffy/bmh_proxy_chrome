@@ -24,10 +24,12 @@ function build_cid_filter()
 {
     var fetch_type = $('#fetch_type').selectpicker('val');
     var fetch_country = $('#fetch_country').selectpicker('val');
+    var fetch_mode = $('#fetch_mode').selectpicker('val');
     var filter = fetch_type + '=1';
     if(fetch_country!="ALL" && fetch_country!="RAW") { //不要提供country
         filter += "&Country=" + fetch_country;
     }
+    filter += "&MODE=" + fetch_mode;
     filter += "&G=1";
     return filter;
 }
@@ -113,15 +115,21 @@ $(document).ready(function(){
         {
             backgroundPage.app.setProxyAddr($('#proxy_address').val());
 
-            if($('#fetch_mode').selectpicker('val').toLowerCase() === "bind"
-                && $('#proxy_bind_address').text().length == 0) 
-            {
-                fresh_backend_proxy();
-            }
-            else {
-                update_proxy_filter();
-                close();
-            }
+            // 通知agent进行绑定，解决connect的问题
+            fresh_backend_proxy();
+            // if($('#fetch_mode').selectpicker('val').toLowerCase() === "bind"
+            //     && $('#proxy_bind_address').text().length == 0) 
+            // {
+            //     fresh_backend_proxy();
+            // }
+            // else if ($('#fetch_type').selectpicker('val').toLowerCase() === "tor")
+            // {
+            //     fresh_backend_proxy();
+            // }
+            // else {
+            //     update_proxy_filter();
+            //     close();
+            // }
         }
         else {
             close();

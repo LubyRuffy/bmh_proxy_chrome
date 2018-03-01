@@ -142,11 +142,13 @@ app.updateFilter = function(proxy_filter){
     app.updateMode(filter_obj.Mode.toLowerCase());
     // console.log('updateFilter: type='+Object.keys(filter_obj)[0].toLowerCase());
     app.updateType(Object.keys(filter_obj)[0].toLowerCase());
+    // alert(app.filter);
 }
 
 app.setFilter = function(proxy_filter) {
     chrome.storage.sync.set({'proxy_filter': proxy_filter});
     app.updateFilter(proxy_filter);
+    //alert(proxy_filter)
 } ;
 
 app.build_filter = function(info) {
@@ -169,45 +171,6 @@ app.setFilterFromObj = function(info) {
     var filter = app.build_filter(info);
     app.setFilter(filter);
 };
-
-  
-// 修改ua
-// app.changeUA = function(tabId) {
-//     console.log('tabid: ' + tabId);
-//     // 1. Attach the debugger
-//     chrome.debugger.attach({tabId: tabId}, '1.2', function() {
-//         if (chrome.runtime.lastError) {
-//             console.log(chrome.runtime.lastError.message);
-//             return;
-//         }
-//         // 2. Debugger attached, now prepare for modifying the UA
-//         chrome.debugger.sendCommand({
-//             tabId:tabId
-//         }, "Network.enable", {}, function(response) {
-//             if (chrome.runtime.lastError)
-//                 console.log(chrome.runtime.lastError.message);
-//             // Possible response: response.id / response.error
-//             // 3. Change the User Agent string!
-//             var ua_with_filter = app.ua + '(((' + app.filter + ')))';
-//             console.log(ua_with_filter);
-//             chrome.debugger.sendCommand({
-//                 tabId:tabId
-//             }, "Network.setUserAgentOverride", {
-//                 userAgent: ua_with_filter
-//             }, function(response) {
-//                 if (chrome.runtime.lastError)
-//                         console.log(chrome.runtime.lastError.message);
-//                 // Possible response: response.id / response.error
-//                 // 4. Now detach the debugger (this restores the UA string).
-//                 //chrome.debugger.detach({tabId:tabId});
-//             });
-//         });
-//     });	
-// }
-// chrome.webNavigation.onBeforeNavigate.addListener(function(details){
-//     // console.log(JSON.stringify(details));
-//     app.changeUA(details.tabId);
-// });
 
 // 添加http
 chrome.webRequest.onBeforeSendHeaders.addListener(function (info) {
